@@ -1,0 +1,14 @@
+[Unit]
+Description=Minecraft Server
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/java -jar server.jar
+EnvironmentFile={{ minecraft_server_config }}/environments
+WorkingDirectory={{ minecraft_server_home }}
+Restart=always
+User={{ minecraft_server_user }}
+Group={{ minecraft_server_group }}
+
+[Install]
+WantedBy=multi-user.target

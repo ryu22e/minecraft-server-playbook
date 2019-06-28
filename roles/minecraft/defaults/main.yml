@@ -1,0 +1,9 @@
+---
+
+minecraft_server_user: "minecraft"
+minecraft_server_group: "minecraft"
+minecraft_server_home: "/var/minecraft"
+minecraft_server_config: "/etc/minecraft"
+minecraft_server_download_url: https://launcher.mojang.com/v1/objects/d0d0fe2b1dc6ab4c65554cb734270872b72dadd6/server.jar
+minecraft_server_sha256_checksum: "942256f0bfec40f2331b1b0c55d7a683b86ee40e51fa500a2aa76cf1f1041b38"
+minecraft_server_java_options: "-Xmx1024M -Xms1024M"

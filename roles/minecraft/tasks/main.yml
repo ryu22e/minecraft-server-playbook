@@ -1,0 +1,91 @@
+---
+
+- name: Install dependencies
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - software-properties-common
+- name: Add apt repository for java8
+  apt_repository:
+    repo: ppa:webupd8team/java
+- name: Install Java8
+  apt:
+    name: ['openjdk-8-jre']
+- name: Add group for minecraft server
+  group:
+    name: "{{ minecraft_server_group }}"
+- name: Add user for minecraft server
+  user:
+    name: "{{ minecraft_server_user }}"
+    group: "{{ minecraft_server_group }}"
+    shell: /bin/bash
+- name: Create minecraft server home directory
+  file:
+    path: "{{ minecraft_server_home }}"
+    state: directory
+    owner: "{{ minecraft_server_user }}"
+    group: "{{ minecraft_server_group }}"
+    mode: 0744
+- name: Create minecraft server config directory
+  file:
+    path: "{{ minecraft_server_config }}"
+    state: directory
+    owner: "{{ minecraft_server_user }}"
+    group: "{{ minecraft_server_group }}"
+    mode: 0744
+- name: Create minecraft server environments
+  template:
+    src: environments.j2
+    dest: "{{ minecraft_server_config }}/environments"
+    owner: "{{ minecraft_server_user }}"
+    group: "{{ minecraft_server_group }}"
+    mode: 0644
+- name: Find minecraft server
+  stat:
+    path: "{{ minecraft_server_home }}/server.jar"
+    checksum_algorithm: sha256
+  register: st
+- name: Download minecraft server
+  get_url:
+    url: "{{ minecraft_server_download_url }}"
+    checksum: "sha256:{{ minecraft_server_sha256_checksum }}"
+    dest: "{{ minecraft_server_home }}/server.jar"
+    owner: "{{ minecraft_server_user }}"
+    group: "{{ minecraft_server_group }}"
+    mode: 0644
+  when: st.stat.checksum != minecraft_server_sha256_checksum
+- name: Find eula.txt
+  stat:
+    path: "{{ minecraft_server_home }}/eula.txt"
+  register: st
+- name: Initialize
+  shell: java -jar server.jar
+  args:
+    chdir: "{{ minecraft_server_home }}"
+  become: yes
+  become_user: "{{ minecraft_server_user }}"
+  when: not st.stat.exists
+- name: Replace eula.txt
+  replace:
+    path: "{{ minecraft_server_home }}/eula.txt"
+    regexp: "^eula=false$"
+    replace: "eula=true"
+    owner: "{{ minecraft_server_user }}"
+    group: "{{ minecraft_server_group }}"
+  register: st
+- name: Create systemd config
+  template:
+    src: minecraft.service.j2
+    dest: /etc/systemd/system/minecraft.service
+    owner: root
+    group: root
+    mode: 0755
+- name: Enable minecraft
+  service:
+    name: minecraft.service
+    enabled: yes
+- name: Restart minecraft
+  service:
+    name: minecraft.service
+    state: restarted
