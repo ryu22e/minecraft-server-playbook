@@ -54,7 +54,7 @@
     owner: "{{ minecraft_server_user }}"
     group: "{{ minecraft_server_group }}"
     mode: 0644
-  when: st.stat.checksum != minecraft_server_sha256_checksum
+  when: st.stat.checksum is not defined or st.stat.checksum != minecraft_server_sha256_checksum
 - name: Find eula.txt
   stat:
     path: "{{ minecraft_server_home }}/eula.txt"
