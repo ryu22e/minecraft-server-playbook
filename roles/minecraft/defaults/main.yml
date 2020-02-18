@@ -4,6 +4,6 @@ minecraft_server_user: "minecraft"
 minecraft_server_group: "minecraft"
 minecraft_server_home: "/var/minecraft"
 minecraft_server_config: "/etc/minecraft"
-minecraft_server_download_url: https://launcher.mojang.com/v1/objects/d0d0fe2b1dc6ab4c65554cb734270872b72dadd6/server.jar
-minecraft_server_sha256_checksum: "942256f0bfec40f2331b1b0c55d7a683b86ee40e51fa500a2aa76cf1f1041b38"
+minecraft_server_download_url: https://launcher.mojang.com/v1/objects/bb2b6b1aefcd70dfd1892149ac3a215f6c636b07/server.jar
+minecraft_server_sha256_checksum: "80cf86dc2004ec6a2dc0183d1c75a9af3ba0669f7c332e4247afb1d76fb67e8a"
 minecraft_server_java_options: "-Xmx1024M -Xms1024M"
